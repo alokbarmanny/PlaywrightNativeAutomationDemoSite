@@ -1,4 +1,4 @@
-﻿package com.example.base;
+package com.example.base;
 
 import com.example.config.ConfigManager;
 import com.example.config.DataManager;

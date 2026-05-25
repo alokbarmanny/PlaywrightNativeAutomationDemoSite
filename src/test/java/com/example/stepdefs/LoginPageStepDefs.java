@@ -1,4 +1,4 @@
-﻿package com.example.stepdefs;
+package com.example.stepdefs;
 
 import com.example.base.PlaywrightFactory;
 import com.example.config.DataManager;
@@ -42,6 +42,7 @@ public class LoginPageStepDefs {
     }
 
     @Then("user print address information from \"\" section of the data file")
+    @SuppressWarnings("unchecked")
     public void userPrintAddressInformationFromSectionOfTheDataFile(String rawAddressKey) {
         String addressKey = DataManager.resolveValue(rawAddressKey);
         Object addressObj = DataManager.getValue(addressKey);

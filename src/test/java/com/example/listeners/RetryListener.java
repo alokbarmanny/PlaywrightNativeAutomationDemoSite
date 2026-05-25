@@ -1,14 +1,16 @@
-﻿package com.example.listeners;
+package com.example.listeners;
 
-import org.testng.IInvokedMethod;
-import org.testng.IInvokedMethodListener;
-import org.testng.ITestResult;
+import org.testng.IAnnotationTransformer;
+import org.testng.annotations.ITestAnnotation;
 
-public class RetryListener implements IInvokedMethodListener {
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+
+public class RetryListener implements IAnnotationTransformer {
+    
     @Override
-    public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
-        testResult.getMethod().setRetryAnalyzer(new RetryAnalyzer());
+    @SuppressWarnings("rawtypes")
+    public void transform(ITestAnnotation annotation, Class testClass, Constructor testConstructor, Method testMethod) {
+        annotation.setRetryAnalyzer(RetryAnalyzer.class);
     }
-    @Override
-    public void afterInvocation(IInvokedMethod method, ITestResult testResult) {}
 }
