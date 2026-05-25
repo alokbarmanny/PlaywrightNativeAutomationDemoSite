@@ -12,12 +12,13 @@ public class PlaywrightFactory {
     public static Page initPage() {
         if (playwrightThreadLocal.get() == null) { playwrightThreadLocal.set(Playwright.create()); }
 
-        String browserName = ConfigManager.get("browser.name");
+        // Use System Property (e.g. from GHA matrix) first, then config, then default to chromium
+        String browserName = System.getProperty("browser", ConfigManager.get("browser.name"));
         if (browserName == null) browserName = "chromium";
 
         boolean isCI = System.getenv("CI") != null;
-        // Force headless in CI; locally, default to headed (false) if config is missing
-        boolean isHeadless = isCI || Boolean.parseBoolean(ConfigManager.get("execution.headless"));
+        // Always headless in CI; locally, respect system property or config (defaults to false/headed)
+        boolean isHeadless = isCI || Boolean.parseBoolean(System.getProperty("headless", ConfigManager.get("execution.headless")));
 
         BrowserType.LaunchOptions options = new BrowserType.LaunchOptions()
                 .setHeadless(isHeadless)
@@ -27,8 +28,8 @@ public class PlaywrightFactory {
         switch (browserName.toLowerCase()) {
             case "firefox": browser = playwrightThreadLocal.get().firefox().launch(options); break;
             case "webkit": browser = playwrightThreadLocal.get().webkit().launch(options); break;
-            case "chrome": browser = playwrightThreadLocal.get().chromium().launch(new BrowserType.LaunchOptions(options).setChannel("chrome")); break;
-            case "edge": browser = playwrightThreadLocal.get().chromium().launch(new BrowserType.LaunchOptions(options).setChannel("msedge")); break;
+            case "chrome": browser = playwrightThreadLocal.get().chromium().launch(options.setChannel("chrome")); break;
+            case "edge": browser = playwrightThreadLocal.get().chromium().launch(options.setChannel("msedge")); break;
             case "chromium": default: browser = playwrightThreadLocal.get().chromium().launch(options); break;
         }
 
