@@ -26,10 +26,10 @@ public class LoginPageStepDefs {
         loginPage.navigate();
     }
 
-    @When("the user logs in with username \"\" and password \"\"")
-    public void theUserLogsInWithUsernameAndPassword(String rawUsername, String rawPassword) {
-        String actualUsername = DataManager.resolveValue(rawUsername);
-        String actualPassword = DataManager.resolveValue(rawPassword);
+    @When("the user logs in with username {string} and password {string}")
+    public void the_user_logs_in_with_username_and_password(String username, String password) {
+        String actualUsername = DataManager.resolveValue(username);
+        String actualPassword = DataManager.resolveValue(password);
         ExtentReportListener.logInfo("Attempting login with user: " + actualUsername);
         loginPage.login(actualUsername, actualPassword);
     }
@@ -41,16 +41,18 @@ public class LoginPageStepDefs {
         ExtentReportListener.logPass("Verified dashboard header");
     }
 
-    @Then("user print address information from \"\" section of the data file")
+    @Then("user print address information from {string} section of the data file")
     @SuppressWarnings("unchecked")
-    public void userPrintAddressInformationFromSectionOfTheDataFile(String rawAddressKey) {
-        String addressKey = DataManager.resolveValue(rawAddressKey);
+    public void user_print_address_information_from_section_of_the_data_file(String addressSection) {
+        String addressKey = DataManager.resolveValue(addressSection);
         Object addressObj = DataManager.getValue(addressKey);
         System.out.println("Thread [" + Thread.currentThread().getId() + "] ---------- Address Information ----------");
         if (addressObj instanceof Map) {
             Map<String, String> addressMap = (Map<String, String>) addressObj;
             addressMap.forEach((k, v) -> System.out.println(k + ": " + v));
-        } else { System.out.println(addressObj); }
+        } else {
+            System.out.println(addressObj);
+        }
         System.out.println("--------------------------------------------------------");
     }
 }
