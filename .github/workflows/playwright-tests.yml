@@ -1,4 +1,4 @@
-﻿name: Playwright Tests
+﻿﻿name: Playwright Tests
 
 on:
   push:
@@ -30,21 +30,21 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ~/.m2
-        key: ${{ runner.os }}-m2-}
-        restore-keys: ${{ runner.os }}-m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2-
 
     - name: Install Playwright Browsers
-      run: mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install --with-deps ${{ matrix.browser }}
+      run: mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install --with-deps ${{ matrix.browser }}"
       
     - name: Build with Maven
       run: mvn clean compile -DskipTests
 
     - name: Run Tests
-      run: mvn test -Denv=dev -Dbrowser=}
+      run: mvn test -Denv=dev -Dbrowser=${{ matrix.browser }}
       
     - name: Upload Test Report
       if: always()
       uses: actions/upload-artifact@v3
       with:
-        name: test-report-}
+        name: test-report-${{ matrix.browser }}
         path: target/cucumber-reports.html

@@ -1,4 +1,4 @@
-﻿package com.example.base;
+﻿﻿package com.example.base;
 
 import com.example.config.ConfigManager;
 import com.microsoft.playwright.*;
@@ -16,13 +16,8 @@ public class PlaywrightFactory {
         if (browserName == null) browserName = "chromium";
 
         boolean isCI = System.getenv("CI") != null;
-        boolean isHeadless;
-        if (isCI) {
-            isHeadless = true;
-        } else {
-            String headlessProp = ConfigManager.get("execution.headless");
-            isHeadless = Boolean.parseBoolean(headlessProp);
-        }
+        // Force headless in CI; locally, default to headed (false) if config is missing
+        boolean isHeadless = isCI || Boolean.parseBoolean(ConfigManager.get("execution.headless"));
 
         BrowserType.LaunchOptions options = new BrowserType.LaunchOptions()
                 .setHeadless(isHeadless)
